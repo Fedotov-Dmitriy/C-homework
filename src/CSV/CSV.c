@@ -1,8 +1,8 @@
+#include "CSV.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "CSV.h"
 
 static void countColumnsAndRows(const char* inp, int* rows, int* columns)
 {
