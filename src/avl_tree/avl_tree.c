@@ -329,13 +329,13 @@ static AVLNode* avlDeleteInternal(AVLNode* node, struct DeleteData* data)
         while (maxLeft->right != NULL) {
             maxLeft = maxLeft->right;
         }
-        void* oldKey   = node->key;
+        void* oldKey = node->key;
         void* oldValue = node->value;
-        node->key      = maxLeft->key;
-        node->value    = maxLeft->value;
-        maxLeft->key   = oldKey;
+        node->key = maxLeft->key;
+        node->value = maxLeft->value;
+        maxLeft->key = oldKey;
         maxLeft->value = oldValue;
-        data->key      = node->key;
+        data->key = node->key;
         node->left = avlDeleteInternal(node->left, data);
 
         if (data->hasDecHeight == true) {
