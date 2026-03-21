@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(С-homework C)
+
 add_library(avl_tree avl_tree.c)
 target_include_directories(avl_tree PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
