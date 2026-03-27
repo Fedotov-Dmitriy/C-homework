@@ -12,4 +12,4 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${ASSETS_SOURCE_DIR}
             ${ASSETS_BUILD_DIR}
-    COMMENT "Copying assets directory to build output"
+    COMMENT "Copying assets directory to build output")
