@@ -8,11 +8,11 @@
 #define STRINGINIZE(val) STRINGINIZE_DUMMY(val)
 #define STRINGINIZE_DUMMY(val) #val
 
-// For buffer overflow in loadData()
+// Для переполнения буфера в loadData()
 #define KEY_SIZE 31
 #define VALUE_SIZE 255
 /*
- * For AVL-tree comparator
+ * Для компаратора AVL дерева
  */
 int myStrcmp(void* s1, void* s2)
 {
@@ -20,9 +20,9 @@ int myStrcmp(void* s1, void* s2)
 }
 
 /*
- * Print values into the file.
- * Return 0 on success.
- * Return 1 on fail.
+ * Печатает значения в файл
+ * Возвращает 0 при успехе
+ * Возвращает 1 при ошибке
  */
 int printRecord(FILE* file, void* key, void* value)
 {
@@ -30,8 +30,8 @@ int printRecord(FILE* file, void* key, void* value)
 }
 
 /*
- * Read database and load data into AVL-tree.
- * Return NULL if error ocurred.
+ * Считывает базу данных и загружает данные в AVL дерево
+ * Возвращает NULL если произошла ошибка
  */
 AVLTree* loadData(FILE* file)
 {
@@ -78,7 +78,7 @@ AVLTree* loadData(FILE* file)
 
     if (ferror(file)) {
         perror("Failed to read");
-        avlFree(&tree); // Sets to NULL
+        avlFree(&tree); // Устанавливает в NULL
     }
 
     return tree;
@@ -99,7 +99,7 @@ void addRecord(AVLTree* tree, char* keyValue)
 {
     int keySize = strcspn(keyValue, ":");
     keyValue[keySize] = '\0';
-    /* Now keyValue points to key string */
+    /* Теперь keyValue указывает на строку ключа */
 
     char* newKey = strdup(keyValue);
     char* newValue = strdup(keyValue + keySize + 1);
@@ -111,7 +111,7 @@ void addRecord(AVLTree* tree, char* keyValue)
         return;
     }
 
-    /* If the key is already in the tree, the value is freed and replaced, while the key is not. */
+    /* Если ключ уже есть в дереве значение освобождается и заменяется а ключ нет */
     if (hasNew) {
         printf("New record \"%s:%s\" was added.\n", newKey, newValue);
     } else {
@@ -131,7 +131,7 @@ void deleteRecord(AVLTree* tree, char* key)
 
 void saveRecords(FILE* file, AVLTree* tree)
 {
-    /* Reopen the file with write access, erase data */
+    /* Открывает файл заново с доступом на запись стирает данные */
     file = freopen(NULL, "w+", file);
     if (file == NULL || avlInorder(tree, file, printRecord) != 0) {
         fprintf(stderr, "Failed to save data into the file: %s.\n", strerror(errno));
@@ -152,8 +152,8 @@ void printHelp()
 }
 
 /*
- * Return false if user wants to quit.
- * Return true otherwise.
+ * Возвращает false если пользователь хочет выйти
+ * Возвращает true в противном случае
  */
 bool processCommand(AVLTree* tree, FILE* file, char* command, char* specifier)
 {
@@ -182,7 +182,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    /* Open for read-only */
+    /* Открыть только для чтения */
     FILE* file = fopen(argv[1], "r");
     if (file == NULL) {
         fprintf(stderr, "Failed to open \"%s\": %s\n", argv[1], strerror(errno));
@@ -204,7 +204,7 @@ int main(int argc, char** argv)
             break;
 
         buf[strcspn(buf, "\n")] = '\0';
-        /* Empty string */
+        /* Пустая строка */
         if (buf[0] == '\0')
             continue;
 

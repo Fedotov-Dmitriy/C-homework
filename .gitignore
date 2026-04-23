@@ -419,4 +419,6 @@ FodyWeavers.xsd
 #add Cmake files
 *.cache
 *.build
+#add macos files
+*.DS_Store
 

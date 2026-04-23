@@ -152,7 +152,7 @@ static AVLNode* avlInsertInternal(AVLNode* node, struct InsertData* data)
         data->hasError = false;
         data->hasNew = false;
         data->hasIncHeight = false;
-        /* Free memory if cleaner is defined*/
+        /* Освобождаем память если задан очиститель */
         if (data->tree->valueFree != NULL)
             data->tree->valueFree(node->value);
 
@@ -167,7 +167,7 @@ static AVLNode* avlInsertInternal(AVLNode* node, struct InsertData* data)
         node->balance = data->hasIncHeight ? node->balance + 1 : node->balance;
     }
 
-    /* When inserted node has a sibling or when need to balance. */
+    /* Когда у вставленного узла появляется сосед или когда нужно балансировать */
     if (node->balance == 0 || abs(node->balance) == 2)
         data->hasIncHeight = false;
     return avlNodeBalance(node);

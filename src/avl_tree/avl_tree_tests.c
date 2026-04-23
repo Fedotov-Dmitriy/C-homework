@@ -31,7 +31,7 @@ void avlTestSmallRotations()
     int treeKeys[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
     char* treeValues[] = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten" };
 
-    /* In order */
+    /* По порядку */
 
     AVLTree* tree = avlAlloc(intCompare, NULL, NULL);
     assert(tree != NULL);
@@ -56,7 +56,7 @@ void avlTestSmallRotations()
     avlFree(&tree);
     assert(tree == NULL);
 
-    /* In reverse order */
+    /* В обратном порядке */
 
     tree = avlAlloc(intCompare, NULL, NULL);
     assert(tree != NULL);

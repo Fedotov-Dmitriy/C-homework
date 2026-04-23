@@ -2,9 +2,9 @@
 #include "avl_tree.h"
 
 /*
- * This header is for internal purposes of AVL-tree library.
- * It cannot be included from the user side.
- * This header is used for testing purposes.
+ * Этот заголовочный файл нужен для внутренних целей библиотеки AVL дерева
+ * Его нельзя подключать со стороны пользователя
+ * Этот заголовочный файл используется для тестирования
  */
 
 typedef struct AVLNode {
@@ -24,11 +24,11 @@ typedef struct AVLTree {
 } AVLTree;
 
 /*
- * Check 'balance' value validity.
- * Very slow function used for debug.
+ * Проверяет корректность значения balance
+ * Очень медленная функция используется для отладки
  */
 bool avlIsBalanced(AVLTree* tree);
 /*
- * Very slow function used for debug.
+ * Очень медленная функция используется для отладки
  */
 bool avlIsMetadataCorrect(AVLTree* tree);

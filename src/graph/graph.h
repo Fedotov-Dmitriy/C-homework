@@ -36,7 +36,6 @@ unsigned graphSize(Graph* graph);
  */
 bool graphConnect(Graph* graph, unsigned a, unsigned b, unsigned weight);
 
-
 bool graphAdd(Graph* graph, unsigned amount);
 
 /*
@@ -79,5 +78,3 @@ unsigned adjacentGetVertex(AdjacentList* list);
  * Если list освобождён или 'vert' некорректен, возвращает ((unsigned)-1)
  */
 unsigned adjacentGetConnection(AdjacentList* list, unsigned vert);
-
-
