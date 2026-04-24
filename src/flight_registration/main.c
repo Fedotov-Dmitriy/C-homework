@@ -11,6 +11,7 @@
 // Для переполнения буфера в loadData()
 #define KEY_SIZE 31
 #define VALUE_SIZE 255
+
 /*
  * Для компаратора AVL дерева
  */
@@ -41,8 +42,8 @@ AVLTree* loadData(FILE* file)
         return NULL;
     }
 
-    char key[KEY_SIZE + 1] = {};
-    char value[VALUE_SIZE + 1] = {};
+    char key[KEY_SIZE + 1] = {0};
+    char value[VALUE_SIZE + 1] = {0};
     while (!feof(file)) {
         if (fscanf(file,
                 "%" STRINGINIZE(KEY_SIZE) "[^:]:%" STRINGINIZE(VALUE_SIZE) "[^\n]\n",
@@ -111,7 +112,7 @@ void addRecord(AVLTree* tree, char* keyValue)
         return;
     }
 
-    /* Если ключ уже есть в дереве значение освобождается и заменяется а ключ нет */
+    /* Если ключ уже есть в дереве значение освобождается и заменяется, а ключ нет */
     if (hasNew) {
         printf("New record \"%s:%s\" was added.\n", newKey, newValue);
     } else {
@@ -131,12 +132,12 @@ void deleteRecord(AVLTree* tree, char* key)
 
 void saveRecords(FILE* file, AVLTree* tree)
 {
-    /* Открывает файл заново с доступом на запись стирает данные */
+    /* Открывает файл заново с доступом на запись и стирает данные */
     file = freopen(NULL, "w+", file);
     if (file == NULL || avlInorder(tree, file, printRecord) != 0) {
         fprintf(stderr, "Failed to save data into the file: %s.\n", strerror(errno));
     } else {
-        printf("Successfuly written data into the file (%d records).\n", avlSize(tree));
+        printf("Successfully written data into the file (%d records).\n", avlSize(tree));
         fflush(file);
     }
 }
@@ -197,7 +198,7 @@ int main(int argc, char** argv)
     }
     printf("%d records are loaded, ready to work.\n", avlSize(tree));
 
-    char buf[1024] = {};
+    char buf[1024] = {0};
     while (true) {
         printf("> ");
         if (fgets(buf, sizeof(buf), stdin) == NULL)
@@ -212,8 +213,8 @@ int main(int argc, char** argv)
         while (isspace(buf[idx]))
             idx++;
 
-        char command[8] = {};
-        char specifier[256] = {};
+        char command[8] = {0};
+        char specifier[256] = {0};
         if (sscanf(buf + idx, "%7[^ \n] %[^\n]\n", command, specifier) < 0)
             break;
 
