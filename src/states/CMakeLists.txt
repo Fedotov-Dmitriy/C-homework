@@ -1,6 +1,6 @@
-add_executable(graphStates graphStates.c)
+add_executable(states states.c)
 
-target_link_libraries(graphStates PRIVATE graph)
-target_link_libraries(graphStates PRIVATE heap)
+target_link_libraries(states PRIVATE graph)
+target_link_libraries(states PRIVATE heap)
 
-set_target_properties(graphStates PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set_target_properties(states PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
