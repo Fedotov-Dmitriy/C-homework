@@ -92,7 +92,6 @@ int avlSize(AVLTree* tree);
 
 /*
  * Печатает значения дерева в порядке in order в FILE*
- * Смотри документацию PrintKeyValue
  * Возвращает 0 или первое ненулевое значение возвращённое PrintKeyValue
  */
 int avlInorder(AVLTree* tree, FILE* file, PrintKeyValue printFunc);
