@@ -8,32 +8,19 @@
 #define STRINGINIZE(val) STRINGINIZE_DUMMY(val)
 #define STRINGINIZE_DUMMY(val) #val
 
-// Для переполнения буфера в loadData()
 #define KEY_SIZE 31
 #define VALUE_SIZE 255
 
-/*
- * Для компаратора AVL дерева
- */
 int myStrcmp(void* s1, void* s2)
 {
     return strcmp(s1, s2);
 }
 
-/*
- * Печатает значения в файл
- * Возвращает 0 при успехе
- * Возвращает 1 при ошибке
- */
 int printRecord(FILE* file, void* key, void* value)
 {
     return fprintf(file, "%s:%s\n", (char*)key, (char*)value) < 0;
 }
 
-/*
- * Считывает базу данных и загружает данные в AVL дерево
- * Возвращает NULL если произошла ошибка
- */
 AVLTree* loadData(FILE* file)
 {
     AVLTree* tree = avlAlloc(myStrcmp, free, free);
@@ -44,10 +31,11 @@ AVLTree* loadData(FILE* file)
 
     char key[KEY_SIZE + 1] = {0};
     char value[VALUE_SIZE + 1] = {0};
+
     while (!feof(file)) {
         if (fscanf(file,
-                "%" STRINGINIZE(KEY_SIZE) "[^:]:%" STRINGINIZE(VALUE_SIZE) "[^\n]\n",
-                key, value)
+                   "%" STRINGINIZE(KEY_SIZE) "[^:]:%" STRINGINIZE(VALUE_SIZE) "[^\n]\n",
+                   key, value)
             != 2) {
             break;
         }
@@ -79,7 +67,7 @@ AVLTree* loadData(FILE* file)
 
     if (ferror(file)) {
         perror("Failed to read");
-        avlFree(&tree); // Устанавливает в NULL
+        avlFree(&tree);
     }
 
     return tree;
@@ -100,11 +88,11 @@ void addRecord(AVLTree* tree, char* keyValue)
 {
     int keySize = strcspn(keyValue, ":");
     keyValue[keySize] = '\0';
-    /* Теперь keyValue указывает на строку ключа */
 
     char* newKey = strdup(keyValue);
     char* newValue = strdup(keyValue + keySize + 1);
     bool hasNew = false;
+
     if (!avlInsert(tree, newKey, newValue, &hasNew)) {
         fprintf(stderr, "Failed to add \"%s:%s\" into the database.\n", newKey, newValue);
         free(newKey);
@@ -112,7 +100,6 @@ void addRecord(AVLTree* tree, char* keyValue)
         return;
     }
 
-    /* Если ключ уже есть в дереве значение освобождается и заменяется, а ключ нет */
     if (hasNew) {
         printf("New record \"%s:%s\" was added.\n", newKey, newValue);
     } else {
@@ -132,7 +119,6 @@ void deleteRecord(AVLTree* tree, char* key)
 
 void saveRecords(FILE* file, AVLTree* tree)
 {
-    /* Открывает файл заново с доступом на запись и стирает данные */
     file = freopen(NULL, "w+", file);
     if (file == NULL || avlInorder(tree, file, printRecord) != 0) {
         fprintf(stderr, "Failed to save data into the file: %s.\n", strerror(errno));
@@ -152,10 +138,6 @@ void printHelp()
     printf("'quit' is used to quit\n");
 }
 
-/*
- * Возвращает false если пользователь хочет выйти
- * Возвращает true в противном случае
- */
 bool processCommand(AVLTree* tree, FILE* file, char* command, char* specifier)
 {
     if (strcmp("find", command) == 0) {
@@ -183,7 +165,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    /* Открыть только для чтения */
     FILE* file = fopen(argv[1], "r");
     if (file == NULL) {
         fprintf(stderr, "Failed to open \"%s\": %s\n", argv[1], strerror(errno));
@@ -205,7 +186,6 @@ int main(int argc, char** argv)
             break;
 
         buf[strcspn(buf, "\n")] = '\0';
-        /* Пустая строка */
         if (buf[0] == '\0')
             continue;
 
