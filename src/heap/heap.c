@@ -54,12 +54,14 @@ Heap* heapCreate(HeapComparator comp, unsigned count, void** data)
         free(heap);
         return NULL;
     }
+
     heap->size = 0;
     heap->comp = comp;
 
     for (unsigned i = 0; i < count; i++) {
         heapPush(heap, data[i]);
     }
+
     return heap;
 }
 
@@ -88,17 +90,18 @@ bool heapPush(Heap* heap, void* val)
 void* heapPop(Heap* heap)
 {
     if (heapEmpty(heap))
-        return 0;
+        return NULL;
 
     void* ret = HEAP_TOP(heap);
     swapPtr(&HEAP_TOP(heap), &HEAP_BACK(heap));
     heap->size--;
 
-    int numPos = 0;
+    unsigned numPos = 0;
     while (numPos < heap->size) {
-        int topValue = numPos;
-        int left = numPos * 2 + 1;
-        int right = numPos * 2 + 2;
+        unsigned topValue = numPos;
+        unsigned left = numPos * 2 + 1;
+        unsigned right = numPos * 2 + 2;
+
         if (left < heap->size && heap->comp(heap->data[left], heap->data[topValue]) > 0) {
             topValue = left;
         }
@@ -106,6 +109,7 @@ void* heapPop(Heap* heap)
         if (right < heap->size && heap->comp(heap->data[right], heap->data[topValue]) > 0) {
             topValue = right;
         }
+
         if (topValue != numPos) {
             swapPtr(&heap->data[numPos], &heap->data[topValue]);
             numPos = topValue;
@@ -132,6 +136,7 @@ void heapFree(Heap** heap, HeapCleaner cleaner)
             cleaner((*heap)->data[i]);
         }
     }
+
     free((*heap)->data);
     free(*heap);
     *heap = NULL;
