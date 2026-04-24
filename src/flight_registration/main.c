@@ -33,8 +33,8 @@ AVLTree* loadData(FILE* file)
     char value[VALUE_SIZE + 1] = {0};
 
     while (!feof(file)) {
-        if (fscanf(file,
-                   "%" STRINGINIZE(KEY_SIZE) "[^:]:%" STRINGINIZE(VALUE_SIZE) "[^\n]\n",
+        if (fscanf(file, "%" STRINGINIZE(KEY_SIZE) "[^:]:%"
+                          STRINGINIZE(VALUE_SIZE) "[^\n]\n",
                    key, value)
             != 2) {
             break;
@@ -94,7 +94,8 @@ void addRecord(AVLTree* tree, char* keyValue)
     bool hasNew = false;
 
     if (!avlInsert(tree, newKey, newValue, &hasNew)) {
-        fprintf(stderr, "Failed to add \"%s:%s\" into the database.\n", newKey, newValue);
+        fprintf(stderr, "Failed to add \"%s:%s\" into the database.\n",
+                newKey, newValue);
         free(newKey);
         free(newValue);
         return;
@@ -121,9 +122,11 @@ void saveRecords(FILE* file, AVLTree* tree)
 {
     file = freopen(NULL, "w+", file);
     if (file == NULL || avlInorder(tree, file, printRecord) != 0) {
-        fprintf(stderr, "Failed to save data into the file: %s.\n", strerror(errno));
+        fprintf(stderr, "Failed to save data into the file: %s.\n",
+                strerror(errno));
     } else {
-        printf("Successfully written data into the file (%d records).\n", avlSize(tree));
+        printf("Successfully written data into the file (%d records).\n",
+               avlSize(tree));
         fflush(file);
     }
 }
@@ -167,7 +170,8 @@ int main(int argc, char** argv)
 
     FILE* file = fopen(argv[1], "r");
     if (file == NULL) {
-        fprintf(stderr, "Failed to open \"%s\": %s\n", argv[1], strerror(errno));
+        fprintf(stderr, "Failed to open \"%s\": %s\n", argv[1],
+                strerror(errno));
         return 1;
     }
 
