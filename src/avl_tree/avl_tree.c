@@ -20,7 +20,7 @@ struct DeleteData {
 };
 
 static AVLNode* avlNodeAlloc(void* key, void* value);
-static void avlTreeFree(const AVLTree* tree, AVLNode* root);
+static void avlTreeFree(const AVLTree* tree, AVLNode* node);
 static void avlNodeFree(AVLNode* node, KeyCleaner keyFree, ValueCleaner valueFree);
 
 static AVLNode* avlInsertInternal(AVLNode* node, struct InsertData* data);
