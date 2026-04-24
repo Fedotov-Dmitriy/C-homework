@@ -53,6 +53,7 @@ void avlFree(AVLTree** tree)
 {
     if (tree == NULL || *tree == NULL)
         return;
+
     avlTreeFree(*tree, (*tree)->root);
     free(*tree);
     *tree = NULL;
@@ -68,6 +69,7 @@ bool avlInsert(AVLTree* tree, void* key, void* value, bool* hasNew)
         .hasError = false,
         .hasIncHeight = false,
     };
+
     tree->root = avlInsertInternal(tree->root, &data);
 
     *hasNew = data.hasNew;
@@ -83,11 +85,13 @@ void* avlFind(AVLTree* tree, void* key, bool* isFound)
         *isFound = false;
         return NULL;
     }
+
     AVLNode* node = avlFindInternal(tree->root, key, tree->comp);
     if (node == NULL) {
         *isFound = false;
         return NULL;
     }
+
     *isFound = true;
     return node->value;
 }
@@ -104,6 +108,7 @@ bool avlDelete(AVLTree* tree, void* key)
     tree->root = avlDeleteInternal(tree->root, &data);
     if (data.hasDeleted)
         tree->nodes--;
+
     return data.hasDeleted;
 }
 
@@ -152,13 +157,14 @@ static AVLNode* avlInsertInternal(AVLNode* node, struct InsertData* data)
         data->hasError = false;
         data->hasNew = false;
         data->hasIncHeight = false;
-        /* Освобождаем память если задан очиститель */
+
         if (data->tree->valueFree != NULL)
             data->tree->valueFree(node->value);
 
         node->value = data->value;
         return node;
     }
+
     if (compRes > 0) {
         node->left = avlInsertInternal(node->left, data);
         node->balance = data->hasIncHeight ? node->balance - 1 : node->balance;
@@ -167,9 +173,9 @@ static AVLNode* avlInsertInternal(AVLNode* node, struct InsertData* data)
         node->balance = data->hasIncHeight ? node->balance + 1 : node->balance;
     }
 
-    /* Когда у вставленного узла появляется сосед или когда нужно балансировать */
     if (node->balance == 0 || abs(node->balance) == 2)
         data->hasIncHeight = false;
+
     return avlNodeBalance(node);
 }
 
@@ -192,18 +198,21 @@ static AVLNode* avlFindInternal(AVLNode* node, void* key, Comparator comp)
 static AVLNode* avlNodeBalance(AVLNode* node)
 {
     assert(node != NULL);
+
     if (node->balance == 2) {
         assert(node->right != NULL);
         if (node->right->balance >= 0)
             return avlNodeRotateLeft(node);
         return avlNodeRotateRightLeft(node);
     }
+
     if (node->balance == -2) {
         assert(node->left != NULL);
         if (node->left->balance <= 0)
             return avlNodeRotateRight(node);
         return avlNodeRotateLeftRight(node);
     }
+
     return node;
 }
 
@@ -211,83 +220,90 @@ static AVLNode* avlNodeRotateLeft(AVLNode* node)
 {
     AVLNode* center = node->right->left;
     AVLNode* newRoot = node->right;
+
     node->right = center;
     newRoot->left = node;
 
     if (newRoot->balance == 0) {
         newRoot->balance = -1;
         node->balance = 1;
-    } else { /* newRoot->balance == 1 */
+    } else {
         newRoot->balance = 0;
         node->balance = 0;
     }
 
     return newRoot;
 }
+
 static AVLNode* avlNodeRotateRight(AVLNode* node)
 {
     AVLNode* center = node->left->right;
     AVLNode* newRoot = node->left;
+
     node->left = center;
     newRoot->right = node;
 
     if (newRoot->balance == 0) {
         newRoot->balance = 1;
         node->balance = -1;
-    } else { /* newRoot->balance == -1 */
+    } else {
         newRoot->balance = 0;
         node->balance = 0;
     }
 
     return newRoot;
 }
+
 static AVLNode* avlNodeRotateRightLeft(AVLNode* node)
 {
-    AVLNode* X = node;
-    AVLNode* Z = node->right;
-    AVLNode* Y = node->right->left;
+    AVLNode* x = node;
+    AVLNode* z = node->right;
+    AVLNode* y = node->right->left;
 
-    Z->left = Y->right;
-    Y->right = Z;
-    X->right = Y->left;
-    Y->left = X;
+    z->left = y->right;
+    y->right = z;
+    x->right = y->left;
+    y->left = x;
 
-    if (Y->balance == 0) {
-        X->balance = 0;
-        Z->balance = 0;
-    } else if (Y->balance == 1) {
-        X->balance = -1;
-        Z->balance = 0;
-    } else { /* Y->balance == -1 */
-        X->balance = 0;
-        Z->balance = 1;
+    if (y->balance == 0) {
+        x->balance = 0;
+        z->balance = 0;
+    } else if (y->balance == 1) {
+        x->balance = -1;
+        z->balance = 0;
+    } else {
+        x->balance = 0;
+        z->balance = 1;
     }
 
-    return Y;
+    y->balance = 0;
+    return y;
 }
+
 static AVLNode* avlNodeRotateLeftRight(AVLNode* node)
 {
-    AVLNode* X = node;
-    AVLNode* Z = node->left;
-    AVLNode* Y = node->left->right;
+    AVLNode* x = node;
+    AVLNode* z = node->left;
+    AVLNode* y = node->left->right;
 
-    Z->right = Y->left;
-    Y->left = Z;
-    X->left = Y->right;
-    Y->right = X;
+    z->right = y->left;
+    y->left = z;
+    x->left = y->right;
+    y->right = x;
 
-    if (Y->balance == 0) {
-        X->balance = 0;
-        Z->balance = 0;
-    } else if (Y->balance == 1) {
-        X->balance = 0;
-        Z->balance = -1;
-    } else { /* Y->balance == -1 */
-        X->balance = 1;
-        Z->balance = 0;
+    if (y->balance == 0) {
+        x->balance = 0;
+        z->balance = 0;
+    } else if (y->balance == 1) {
+        x->balance = 0;
+        z->balance = -1;
+    } else {
+        x->balance = 1;
+        z->balance = 0;
     }
 
-    return Y;
+    y->balance = 0;
+    return y;
 }
 
 static AVLNode* avlDeleteInternal(AVLNode* node, struct DeleteData* data)
@@ -297,6 +313,7 @@ static AVLNode* avlDeleteInternal(AVLNode* node, struct DeleteData* data)
         data->hasDecHeight = false;
         return NULL;
     }
+
     int compRes = data->tree->comp(node->key, data->key);
     if (compRes > 0) {
         node->left = avlDeleteInternal(node->left, data);
@@ -329,18 +346,21 @@ static AVLNode* avlDeleteInternal(AVLNode* node, struct DeleteData* data)
         while (maxLeft->right != NULL) {
             maxLeft = maxLeft->right;
         }
+
         void* oldKey = node->key;
         void* oldValue = node->value;
+
         node->key = maxLeft->key;
         node->value = maxLeft->value;
         maxLeft->key = oldKey;
         maxLeft->value = oldValue;
+
         data->key = node->key;
         node->left = avlDeleteInternal(node->left, data);
 
         if (data->hasDecHeight == true) {
             node->balance++;
-            data->hasDecHeight = (node->balance == 0);
+            data->hasDecHeight = node->balance == 0;
         }
     }
 
@@ -351,8 +371,10 @@ static void avlNodeFree(AVLNode* node, KeyCleaner keyFree, ValueCleaner valueFre
 {
     if (keyFree != NULL)
         keyFree(node->key);
+
     if (valueFree != NULL)
         valueFree(node->value);
+
     free(node);
 }
 
@@ -360,6 +382,7 @@ int avlSize(AVLTree* tree)
 {
     if (tree == NULL)
         return 0;
+
     return tree->nodes;
 }
 
@@ -367,18 +390,22 @@ int avlInorder(AVLTree* tree, FILE* file, PrintKeyValue printFunc)
 {
     if (tree != NULL && tree->root != NULL)
         return avlInorderInternal(tree->root, file, printFunc);
+
     return 0;
 }
 
 static int avlInorderInternal(AVLNode* node, FILE* file, PrintKeyValue printFunc)
 {
     int result = 0;
+
     if (node->left != NULL)
         result = avlInorderInternal(node->left, file, printFunc);
+
     if (result != 0)
         return result;
 
     result = printFunc(file, node->key, node->value);
+
     if (result != 0)
         return result;
 
