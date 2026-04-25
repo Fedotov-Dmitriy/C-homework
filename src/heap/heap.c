@@ -9,7 +9,7 @@ typedef struct Heap {
     HeapComparator comp;
 } Heap;
 
-#define HEAP_TOP(heap) (heap->data[0])
+#define HEAP_TOP(heap) ((heap->data[0]))
 #define HEAP_BACK(heap) ((heap->data[heap->size - 1]))
 
 /* Поиск наименьшей степени двойки которая больше числа */
