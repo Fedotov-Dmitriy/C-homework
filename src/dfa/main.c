@@ -102,16 +102,16 @@ static size_t build_number_dfa_transitions(DfaTransition* transitions)
 int main(void)
 {
     DfaTransition transitions[TRANSITIONS_COUNT];
-    const size_t transitions_count = build_number_dfa_transitions(transitions);
+    const size_t TRANSITIONS_COUNT_BUILT = build_number_dfa_transitions(transitions);
 
-    const DfaState accepting_states[ACCEPTING_STATES_COUNT] = {
+    const DfaState ACCEPTING_STATES[ACCEPTING_STATES_COUNT] = {
         STATE_INTEGER_PART,
         STATE_FRACTIONAL_PART,
         STATE_EXPONENT_DIGITS,
     };
 
     Dfa dfa;
-    DfaStatus status = dfa_init(&dfa, transitions, transitions_count, accepting_states,
+    DfaStatus status = dfa_init(&dfa, transitions, TRANSITIONS_COUNT_BUILT, ACCEPTING_STATES,
         ACCEPTING_STATES_COUNT, STATE_START);
 
     if (status != DFA_STATUS_OK) {
@@ -130,9 +130,9 @@ int main(void)
 
     remove_trailing_newline(input);
 
-    const bool is_number = dfa_check_string(&dfa, input, &status);
+    const bool IS_NUMBER = dfa_check_string(&dfa, input, &status);
 
-    if (is_number) {
+    if (IS_NUMBER) {
         printf("Строка является числом\n");
         return 0;
     }
