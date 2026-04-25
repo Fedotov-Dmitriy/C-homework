@@ -8,21 +8,18 @@
 #define STRINGINIZE(val) STRINGINIZE_DUMMY(val)
 #define STRINGINIZE_DUMMY(val) #val
 
-// For buffer overflow in loadData()
 #define KEY_SIZE 31
 #define VALUE_SIZE 255
-/*
- * For AVL-tree comparator
- */
+
 int myStrcmp(void* s1, void* s2)
 {
     return strcmp(s1, s2);
 }
 
 /*
- * Print values into the file.
- * Return 0 on success.
- * Return 1 on fail.
+ * Print values into the file
+ * Return 0 on success
+ * Return 1 on fail
  */
 int printRecord(FILE* file, void* key, void* value)
 {
@@ -30,8 +27,8 @@ int printRecord(FILE* file, void* key, void* value)
 }
 
 /*
- * Read database and load data into AVL-tree.
- * Return NULL if error ocurred.
+ * Read database and load data into AVL-tree
+ * Return NULL if error ocurred
  */
 AVLTree* loadData(FILE* file)
 {
@@ -78,7 +75,7 @@ AVLTree* loadData(FILE* file)
 
     if (ferror(file)) {
         perror("Failed to read");
-        avlFree(&tree); // Sets to NULL
+        avlFree(&tree); 
     }
 
     return tree;
@@ -99,7 +96,6 @@ void addRecord(AVLTree* tree, char* keyValue)
 {
     int keySize = strcspn(keyValue, ":");
     keyValue[keySize] = '\0';
-    /* Now keyValue points to key string */
 
     char* newKey = strdup(keyValue);
     char* newValue = strdup(keyValue + keySize + 1);
@@ -152,8 +148,8 @@ void printHelp()
 }
 
 /*
- * Return false if user wants to quit.
- * Return true otherwise.
+ * Return false if user wants to quit
+ * Return true otherwise
  */
 bool processCommand(AVLTree* tree, FILE* file, char* command, char* specifier)
 {
