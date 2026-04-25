@@ -41,7 +41,7 @@ static void listFree(Graph* graph);
 
 static bool initAdjacentList(Graph* graph, unsigned vertex);
 
-Graph* graphCreate()
+Graph* graphCreate(void)
 {
     return calloc(1, sizeof(Graph));
 }
@@ -60,7 +60,7 @@ static bool reallocAdjacentLists(Graph* graph, unsigned newCap)
     unsigned oldCap = graph->capacity;
     graph->capacity = newCap;
 
-    int i = 0;
+    unsigned int i = 0;
     for (; i < oldCap; i++) {
         if (!reallocNeighbours(&graph->vertices[i], newCap, oldCap)) {
             i = oldCap;

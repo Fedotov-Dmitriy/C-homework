@@ -49,8 +49,8 @@ static bool readStates(const char* filename, Graph** graph, int** states, unsign
         return false;
     }
 
-    const unsigned cityCount = (unsigned)cityCountInput;
-    const unsigned roadCount = (unsigned)roadCountInput;
+    const unsigned CITY_COUNT = (unsigned)cityCountInput;
+    const unsigned ROAD_COUNT = (unsigned)roadCountInput;
 
     Graph* newGraph = graphCreate();
     if (newGraph == NULL) {
@@ -59,14 +59,14 @@ static bool readStates(const char* filename, Graph** graph, int** states, unsign
         return false;
     }
 
-    if (!graphAdd(newGraph, cityCount)) {
+    if (!graphAdd(newGraph, CITY_COUNT)) {
         fprintf(stderr, "Не удалось добавить вершины в граф\n");
         graphFree(&newGraph);
         fclose(file);
         return false;
     }
 
-    for (unsigned i = 0; i < roadCount; i++) {
+    for (unsigned i = 0; i < ROAD_COUNT; i++) {
         int a = 0;
         int b = 0;
         int weight = 0;

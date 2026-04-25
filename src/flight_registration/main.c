@@ -85,7 +85,7 @@ void findRecord(AVLTree* tree, char* key)
 
 void addRecord(AVLTree* tree, char* keyValue)
 {
-    int keySize = strcspn(keyValue, ":");
+    size_t keySize = strcspn(keyValue, ":");
     keyValue[keySize] = '\0';
 
     char* newKey = strdup(keyValue);
@@ -130,7 +130,7 @@ void saveRecords(FILE* file, AVLTree* tree)
     }
 }
 
-void printHelp()
+void printHelp(void)
 {
     printf("Commands:\n");
     printf("'find [key]' is used to print a record by key.\n");
