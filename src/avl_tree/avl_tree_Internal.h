@@ -2,9 +2,9 @@
 #include "avl_tree.h"
 
 /*
- * This header is for internal purposes of AVL-tree library.
- * It cannot be included from the user side.
- * This header is used for testing purposes.
+ * This header is for internal purposes of AVL-tree library
+ * It cannot be included from the user side
+ * This header is used for testing purposes
  */
 
 typedef struct AVLNode {
@@ -12,7 +12,7 @@ typedef struct AVLNode {
     void* value;
     struct AVLNode* left;
     struct AVLNode* right;
-    int balance; /* balance = rightChildren - leftChildren */
+    int balance; 
 } AVLNode;
 
 typedef struct AVLTree {
@@ -24,11 +24,11 @@ typedef struct AVLTree {
 } AVLTree;
 
 /*
- * Check 'balance' value validity.
- * Very slow function used for debug.
+ * Check 'balance' value validity
+ *
  */
 bool avlIsBalanced(AVLTree* tree);
 /*
- * Very slow function used for debug.
+ * Very slow function used for debug
  */
 bool avlIsMetadataCorrect(AVLTree* tree);
