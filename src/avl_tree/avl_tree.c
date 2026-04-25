@@ -167,7 +167,7 @@ static AVLNode* avlInsertInternal(AVLNode* node, struct InsertData* data)
         node->balance = data->hasIncHeight ? node->balance + 1 : node->balance;
     }
 
-    /* When inserted node has a sibling or when need to balance. */
+    /* Когда вставляемый узел имеет соседний узел или когда необходимо сбалансировать его состояни */
     if (node->balance == 0 || abs(node->balance) == 2)
         data->hasIncHeight = false;
     return avlNodeBalance(node);
@@ -217,7 +217,7 @@ static AVLNode* avlNodeRotateLeft(AVLNode* node)
     if (newRoot->balance == 0) {
         newRoot->balance = -1;
         node->balance = 1;
-    } else { /* newRoot->balance == 1 */
+    } else { 
         newRoot->balance = 0;
         node->balance = 0;
     }
@@ -234,7 +234,7 @@ static AVLNode* avlNodeRotateRight(AVLNode* node)
     if (newRoot->balance == 0) {
         newRoot->balance = 1;
         node->balance = -1;
-    } else { /* newRoot->balance == -1 */
+    } else { 
         newRoot->balance = 0;
         node->balance = 0;
     }
@@ -258,7 +258,7 @@ static AVLNode* avlNodeRotateRightLeft(AVLNode* node)
     } else if (Y->balance == 1) {
         X->balance = -1;
         Z->balance = 0;
-    } else { /* Y->balance == -1 */
+    } else { 
         X->balance = 0;
         Z->balance = 1;
     }
@@ -282,7 +282,7 @@ static AVLNode* avlNodeRotateLeftRight(AVLNode* node)
     } else if (Y->balance == 1) {
         X->balance = 0;
         Z->balance = -1;
-    } else { /* Y->balance == -1 */
+    } else { 
         X->balance = 1;
         Z->balance = 0;
     }
