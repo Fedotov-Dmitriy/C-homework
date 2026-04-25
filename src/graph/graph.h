@@ -12,7 +12,7 @@ typedef struct AdjacentList AdjacentList;
 /*
  * Создаём граф который затем нужно освободить с помощью graphFree()
  */
-Graph* graphCreate();
+Graph* graphCreate(void);
 
 /*
  * Считываем данные графа из файла
