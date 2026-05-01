@@ -4,6 +4,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Разбивает строку по запятым, учитывая пустые поля */
+static int splitCSV(char* buf, char** out_tokens, int max_tokens)
+{
+    int count = 0;
+    char* p = buf;
+    while (count < max_tokens) {
+        out_tokens[count++] = p;
+        char* comma = strchr(p, ',');
+        if (comma == NULL) break;
+        *comma = '\0';
+        p = comma + 1;
+    }
+    return count;
+}
+
 static void countColumnsAndRows(const char* inp, int* rows, int* columns)
 {
     FILE* file = fopen(inp, "r");
@@ -19,7 +34,6 @@ static void countColumnsAndRows(const char* inp, int* rows, int* columns)
             (*columns)++;
         }
     }
-
     fclose(file);
 }
 
@@ -31,21 +45,20 @@ static int* makeArrayOfWidth(const char* inp, int rows, int columns)
     }
 
     char buffer[1024];
+    char* tokens[1024];
     FILE* stream = fopen(inp, "r");
 
     for (int i = 0; i < rows; i++) {
         fgets(buffer, 1024, stream);
         buffer[strcspn(buffer, "\n")] = 0;
-        char* token = strtok(buffer, ",");
+
+        int count = splitCSV(buffer, tokens, columns);
+
         for (int j = 0; j < columns; j++) {
-            /* Если токен NULL — строка короче заголовка, считаем длину 0 */
-            const char* cell = (token != NULL) ? token : "";
+            const char* cell = (j < count) ? tokens[j] : "";
             int len = (int)strlen(cell);
             if (len > width[j]) {
                 width[j] = len;
-            }
-            if (token != NULL) {
-                token = strtok(NULL, ",");
             }
         }
     }
@@ -58,32 +71,23 @@ static void printRow(FILE* out, char* buffer, const int* widths, int columns, bo
 {
     fprintf(out, "| ");
 
-    /* Разбиваем строку на токены заранее, чтобы не путать strtok с двумя вызовами */
     char* tokens[1024];
-    int count = 0;
-    char* token = strtok(buffer, ",");
-    while (token != NULL && count < columns) {
-        tokens[count++] = token;
-        token = strtok(NULL, ",");
-    }
+    int count = splitCSV(buffer, tokens, columns);
 
     for (int j = 0; j < columns; j++) {
-        /* Если столбца нет в строке — пустая ячейка */
         const char* cell = (j < count) ? tokens[j] : "";
         int len = (int)strlen(cell);
 
         char* endp = NULL;
         double res = strtod(cell, &endp);
-        bool isNumber = !(*endp != 0 && res == 0.0) && !heading && strlen(cell) > 0;
+        bool isNumber = (len > 0) && !heading && !(*endp != 0 && res == 0.0);
 
         if (!isNumber) {
-            /* Текст / заголовок: выравнивание влево */
             fprintf(out, "%s", cell);
             for (int q = 0; q < widths[j] - len; q++) {
                 fprintf(out, " ");
             }
         } else {
-            /* Число: выравнивание вправо */
             for (int q = 0; q < widths[j] - len; q++) {
                 fprintf(out, " ");
             }
@@ -98,7 +102,6 @@ static void printRow(FILE* out, char* buffer, const int* widths, int columns, bo
 
     fprintf(out, "\n");
 
-    /* Разделитель после строки */
     for (int k = 0; k < columns; k++) {
         fprintf(out, "+");
         for (int q = 0; q < widths[k] + 2; q++) {
@@ -113,7 +116,6 @@ static void printRows(const char* inp, const char* out, int* widths, int rows, i
     FILE* input = fopen(inp, "r");
     FILE* output = fopen(out, "w");
 
-    /* Верхняя рамка */
     for (int k = 0; k < columns; k++) {
         fprintf(output, "+");
         for (int q = 0; q < widths[k] + 2; q++) {
