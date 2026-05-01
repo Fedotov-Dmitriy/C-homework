@@ -1,4 +1,6 @@
-Test field 1,Test field 2
-alpha record,302
-different string example,41.9
-beta note,15
+Name,Age,City,Country
+Alice,30,Warsaw,Poland
+Bob,,Paris
+Charlie
+Diana,25,,Germany,ExtraColumn
+Eve,22
