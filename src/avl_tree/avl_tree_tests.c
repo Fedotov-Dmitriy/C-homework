@@ -1,5 +1,5 @@
 #include "avl_tree.h"
-#include "avl_tree_Internal.h"
+#include "avl_tree_debug.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
