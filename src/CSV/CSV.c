@@ -38,57 +38,82 @@ static int* makeArrayOfWidth(const char* inp, int rows, int columns)
         buffer[strcspn(buffer, "\n")] = 0;
         char* token = strtok(buffer, ",");
         for (int j = 0; j < columns; j++) {
-            width[j] = ((int)strlen(token) > width[j]) ? (int)strlen(token) : width[j];
-            token = strtok(NULL, ",");
+            /* Если токен NULL — строка короче заголовка, считаем длину 0 */
+            const char* cell = (token != NULL) ? token : "";
+            int len = (int)strlen(cell);
+            if (len > width[j]) {
+                width[j] = len;
+            }
+            if (token != NULL) {
+                token = strtok(NULL, ",");
+            }
         }
     }
 
     fclose(stream);
     return width;
 }
+
 static void printRow(FILE* out, char* buffer, const int* widths, int columns, bool heading)
 {
     fprintf(out, "| ");
-    char* endp = NULL;
+
+    /* Разбиваем строку на токены заранее, чтобы не путать strtok с двумя вызовами */
+    char* tokens[1024];
+    int count = 0;
     char* token = strtok(buffer, ",");
+    while (token != NULL && count < columns) {
+        tokens[count++] = token;
+        token = strtok(NULL, ",");
+    }
+
     for (int j = 0; j < columns; j++) {
-        endp = NULL;
-        double res = strtod(token, &endp);
-        if ((*endp != 0 && res == 0.0) || heading) {
-            fprintf(out, "%s", token);
-            for (int q = 0; q < (int)(widths[j] - strlen(token)); q++) {
+        /* Если столбца нет в строке — пустая ячейка */
+        const char* cell = (j < count) ? tokens[j] : "";
+        int len = (int)strlen(cell);
+
+        char* endp = NULL;
+        double res = strtod(cell, &endp);
+        bool isNumber = !(*endp != 0 && res == 0.0) && !heading && strlen(cell) > 0;
+
+        if (!isNumber) {
+            /* Текст / заголовок: выравнивание влево */
+            fprintf(out, "%s", cell);
+            for (int q = 0; q < widths[j] - len; q++) {
                 fprintf(out, " ");
             }
         } else {
-            for (int q = 0; q < (int)(widths[j] - strlen(token)); q++) {
+            /* Число: выравнивание вправо */
+            for (int q = 0; q < widths[j] - len; q++) {
                 fprintf(out, " ");
             }
-            fprintf(out, "%s", token);
+            fprintf(out, "%s", cell);
         }
+
         fprintf(out, " |");
         if (j != columns - 1) {
             fprintf(out, " ");
         }
-        token = strtok(NULL, ",");
     }
+
     fprintf(out, "\n");
+
+    /* Разделитель после строки */
     for (int k = 0; k < columns; k++) {
         fprintf(out, "+");
         for (int q = 0; q < widths[k] + 2; q++) {
-            if (heading) {
-                fprintf(out, "=");
-            } else {
-                fprintf(out, "-");
-            }
+            fprintf(out, heading ? "=" : "-");
         }
     }
     fprintf(out, "+\n");
 }
+
 static void printRows(const char* inp, const char* out, int* widths, int rows, int columns)
 {
     FILE* input = fopen(inp, "r");
     FILE* output = fopen(out, "w");
 
+    /* Верхняя рамка */
     for (int k = 0; k < columns; k++) {
         fprintf(output, "+");
         for (int q = 0; q < widths[k] + 2; q++) {
@@ -97,17 +122,13 @@ static void printRows(const char* inp, const char* out, int* widths, int rows, i
     }
     if (rows != 0 && columns != 0) {
         fprintf(output, "+\n");
-    };
+    }
 
     char buffer[1024];
     for (int i = 0; i < rows; i++) {
         fgets(buffer, 1024, input);
         buffer[strcspn(buffer, "\n")] = 0;
-        if (i == 0) {
-            printRow(output, buffer, widths, columns, true);
-        } else {
-            printRow(output, buffer, widths, columns, false);
-        }
+        printRow(output, buffer, widths, columns, i == 0);
     }
 
     fclose(output);
@@ -121,6 +142,7 @@ bool prettyPrinter(const char* inp, const char* out)
         return false;
     }
     fclose(input);
+
     int columnsNum = 0;
     int rowsNum = 0;
     countColumnsAndRows(inp, &rowsNum, &columnsNum);
